@@ -1,0 +1,4 @@
+[submodule "ADGenICam"]
+	path = ADGenICam
+	url = https://github.com/areaDetector/ADGenICam.git
+	ignore = all
