@@ -42,7 +42,7 @@ APPDB:=$(APP)/Db
 APPSRC:=$(APP)/src
 
 
-TEMPLATES += $(wildcard $(APPDB)/*.template)
+TEMPLATES += $(wildcard $(APPDB)/*.db)
 
 HEADERS += $(APPSRC)/GenICamFeature.h
 HEADERS += $(APPSRC)/ADGenICam.h
