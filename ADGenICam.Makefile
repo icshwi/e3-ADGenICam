@@ -17,8 +17,8 @@
 # 
 # Author  : Jeong Han Lee
 # email   : han.lee@esss.se
-# Date    : Monday, September  9 09:51:51 CEST 2019
-# version : 0.0.1
+# Date    : Thursday, October 10 10:38:46 CEST 2019
+# version : 0.0.2
 #
 ## The following lines are mandatory, please don't change them.
 where_am_I := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
@@ -54,9 +54,34 @@ SOURCES += $(APPSRC)/ADGenICam.cpp
 SCRIPTS += $(wildcard ../iocsh/*.iocsh)
 
 
-db: 
+USR_DBFLAGS += -I . -I ..
+USR_DBFLAGS += -I $(EPICS_BASE)/db
+USR_DBFLAGS += -I $(APPDB)
 
-.PHONY: db 
+USR_DBFLAGS += -I $(E3_SITEMODS_PATH)/ADCore/$(ADCORE_DEP_VERSION)/db
+
+#SUBS=$(wildcard $(APPDB)/*.substitutions)
+SUBS=
+TMPS=$(wildcard $(APPDB)/*.template)
+
+
+db: $(SUBS) $(TMPS)
+
+$(SUBS):
+	@printf "Inflating database ... %44s >>> %40s \n" "$@" "$(basename $(@)).db"
+	@rm -f  $(basename $(@)).db.d  $(basename $(@)).db
+	@$(MSI) -D $(USR_DBFLAGS) -o $(basename $(@)).db -S $@  > $(basename $(@)).db.d
+	@$(MSI)    $(USR_DBFLAGS) -o $(basename $(@)).db -S $@
+
+$(TMPS):
+	@printf "Inflating database ... %44s >>> %40s \n" "$@" "$(basename $(@)).db"
+	@rm -f  $(basename $(@)).db.d  $(basename $(@)).db
+	@$(MSI) -D $(USR_DBFLAGS) -o $(basename $(@)).db $@  > $(basename $(@)).db.d
+	@$(MSI)    $(USR_DBFLAGS) -o $(basename $(@)).db $@
+
+
+.PHONY: db $(SUBS) $(TMPS)
+
 
 
 vlibs:
